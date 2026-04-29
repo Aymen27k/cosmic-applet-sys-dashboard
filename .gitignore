@@ -1,0 +1,22 @@
+# --- Rust/Cargo ---
+/target/
+**/*.rs.bk
+
+# --- IDEs/Editors ---
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# --- System/OS ---
+.DS_Store
+Thumbs.db
+
+# --- Debian Packaging (Keep if you plan to make a .deb) ---
+debian/*
+!debian/changelog
+!debian/control
+!debian/copyright
+!debian/install
+!debian/rules
+!debian/source/

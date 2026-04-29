@@ -1,0 +1,14 @@
+[Desktop Entry]
+Name=Sys Applet
+Comment=A real-time system monitor applet for the COSMIC™ panel, displaying CPU, GPU, and RAM performance.
+Type=Application
+Icon=com.github.aymen27k.sys_applet
+Exec=sys_applet %F
+Terminal=false
+StartupNotify=true
+Categories=COSMIC
+Keywords=COSMIC
+NoDisplay=true
+X-CosmicApplet=false
+X-CosmicHoverPopup=Auto
+MimeType=
