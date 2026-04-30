@@ -5,6 +5,7 @@ use cosmic::Element;
 use cosmic::surface::Action as SurfaceAction;
 use cosmic::iced::window;
 use crate::systemstate::SystemState;
+use std::collections::VecDeque;
 use cosmic::widget::{column, row, text, icon, divider};
 
 const ID: &str = "com.github.aymen27k.sys_applet";
@@ -16,6 +17,7 @@ pub struct AppModel {
     components: sysinfo::Components,
     last_rx: u64,
     last_tx: u64,
+    temp_history: VecDeque<f32>,
     popup: Option<cosmic::iced::window::Id>,
 }
 
@@ -53,6 +55,7 @@ impl cosmic::Application for AppModel {
                 components,
                 last_rx: initial_rx,
                 last_tx: initial_tx,
+                temp_history: VecDeque::with_capacity(5),
                 popup: None,
             },
             Task::none()
@@ -180,10 +183,20 @@ impl cosmic::Application for AppModel {
                 // Pass the persistent last_rx/tx from 'self' into the collector
                 self.system_state = crate::systemstate::collect_system_data(
                     &mut self.sys, 
-                    &self.components, 
+                    &mut self.components, 
                     &mut self.last_rx,
                     &mut self.last_tx
                 );
+                self.temp_history.push_back(self.system_state.cpu_temp);
+
+                if self.temp_history.len() > 5 {
+                    self.temp_history.pop_front();
+                }
+
+                let sum: f32 = self.temp_history.iter().sum();
+                let avg = sum / self.temp_history.len() as f32;
+
+                self.system_state.cpu_temp = avg.round();
                 Task::none()
             }
             

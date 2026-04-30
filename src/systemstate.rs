@@ -12,8 +12,9 @@ pub struct SystemState {
     pub net_up: u64,
 }
 
-pub fn collect_system_data(sys: &mut System, components: &Components, last_rx: &mut u64, last_tx: &mut u64) -> SystemState {
+pub fn collect_system_data(sys: &mut System, components: &mut Components, last_rx: &mut u64, last_tx: &mut u64) -> SystemState {
     sys.refresh_all();
+    components.refresh(false);
     
     // 1. Network Logic: More concise lookup
     let networks = Networks::new_with_refreshed_list();
