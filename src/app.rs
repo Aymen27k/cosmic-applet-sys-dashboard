@@ -122,11 +122,12 @@ impl cosmic::Application for AppModel {
 
                                 // RAM Row
                                 row![
-                                    icon::icon(icon::from_name("drive-harddisk-symbolic").into()), // Often used for memory/hardware
+                                    icon::icon(icon::from_name("drive-harddisk-symbolic").into()),
                                     text::text(format!(
-                                        "RAM: {}GB / {}GB", 
+                                        "RAM: {:.1}GB / {:.1}GB | {:.0}%",
                                         state.system_state.ram_usage.0, 
-                                        state.system_state.ram_usage.1
+                                        state.system_state.ram_usage.1,
+                                        state.system_state.ram_percentage
                                     )),
                                 ].spacing(10),
                                 

@@ -6,7 +6,8 @@ pub struct SystemState {
     pub cpu_load: i32,
     pub cpu_temp: f32,
     pub gpu_temp: String,
-    pub ram_usage: (u64, u64),
+    pub ram_usage: (f32, f32),
+    pub ram_percentage: f32,
     pub audio_rate: String,
     pub net_down: u64,
     pub net_up: u64,
@@ -39,14 +40,21 @@ pub fn collect_system_data(sys: &mut System, components: &mut Components, last_r
         .and_then(|c| c.temperature())
         .unwrap_or(0.0);
 
+    // 3. RAM metrics
+    let used_mem = sys.used_memory();
+    let total_mem = sys.total_memory();
+
+    let ram_pct = (used_mem as f32 / total_mem as f32) * 100.0;
+
     SystemState {
         cpu_load: sys.global_cpu_usage() as i32,
         cpu_temp: cpu_t,
         gpu_temp: get_gpu_temp(),
         ram_usage: (
-            sys.used_memory() / 1024 / 1024 / 1024, 
-            (sys.total_memory() as f32 / 1024.0 / 1024.0 / 1024.0).round() as u64
+            (used_mem as f32 / 1024.0 / 1024.0 / 1024.0),
+            (total_mem as f32 / 1024.0 / 1024.0 / 1024.0)
         ),
+        ram_percentage: ram_pct,
         audio_rate: get_audio_info(),
         net_down: download_speed,
         net_up: upload_speed,
@@ -59,7 +67,8 @@ impl SystemState {
             cpu_load: 0,
             cpu_temp: 0.0,
             gpu_temp: String::from("0°C"),
-            ram_usage: (0, 0),
+            ram_usage: (0.0, 0.0),
+            ram_percentage: 0.0,
             audio_rate: String::from("N/A"),
             net_down: 0,
             net_up: 0,
